@@ -25,7 +25,7 @@ export default function TeacherProfile() {
       console.log("No user signed in");
     }
 
-    setLoading(false); // <-- Always set loading to false
+    setLoading(false);
   });
 
   return () => unsubscribe();
@@ -77,7 +77,7 @@ export default function TeacherProfile() {
             <span className="text-slate-200">{userData.schoolName}</span>
           </h1>
           <h2 className="text-sm text-slate-400 italic">
-            Department of Science and Technology {/* Optional */}
+            Department of Science and Technology
           </h2>
         </div>
 

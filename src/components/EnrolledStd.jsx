@@ -25,25 +25,35 @@ const EnrolledStd = ({ students }) => {
         }
 
         fetchStudents();
-    }, [])
+    }, []);
 
-    if (isLoading) return <p>Loading students...</p>;
+    if (isLoading) return <p className="bg-slate-800 min-h-screen flex items-center justify-center text-white text-xl">Loading students...</p>;
 
     if (fetchedStudents.length === 0) {
     return <NoStudent/>;
   }
 
     return(
-        <div className="p-6 rounded-lg bg-white shadow hover:shadow-lg hover:scale-[1.01] transition-transform duration-200 border space-y-4">
-            {fetchedStudents.map((student) => {
-                return(
-                    <li key={student.id}>
-                        <button className="text-left px-4 py-2 w-full hover:bg-gray-100 rounded">{student.name}</button>
+
+        <>
+            <div>
+                <div /* className="p-4 rounded-xl bg-slate-700 border border-slate-600 shadow-sm hover:shadow-md mt-2 transition-all duration-200 space-y-2" */>
+                <ul className="list-none space-y-1">
+                    {fetchedStudents.map((student) => (
+                    <li key={student.id} className="hover:bg-slate-600 rounded-lg">
+                        <button className="w-full text-3xl text-left px-3 py-2 rounded-md hover:bg-gray-50 focus:outline-none  font-medium transition-colors bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                        {student.firstName} {student.lastName}
+                        </button>
                     </li>
-                )
-            })}
-            <Link><button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded shadow transition cursor-pointer">Add Student</button></Link>
-        </div>
+                    ))}
+                </ul>
+                </div>
+            </div>
+            
+
+            <Link to='/dashboard/addstudent'><button type="button" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded shadow mt-4 transition cursor-pointer">Add Student</button></Link>
+        </>
+        
     )
 }
 

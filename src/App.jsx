@@ -25,13 +25,14 @@ const route = createBrowserRouter([
     element: <Dashboard/>,
     children: [
       { index: true, element: <WelcomePage /> },
-      { path: 'students', element: <EnrolledStd /> },
+      { path: 'students', element: <EnrolledStd />},
       { path: 'profile', element: <TeacherProfile/> },
       { path: 'addstudent', element: <StdBiodata/> },
       { path: 'settings', element: <ErrorPage/> }
     ]
   } 
   ] },
+  
 ])
  
 function App() {

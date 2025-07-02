@@ -12,7 +12,8 @@ function Login(){
   const { darkTheme } = useDarkMode();
   const navigate = useNavigate();
   const [ error, setError ] = useState();
-  const [ showPassword, setShowPassword ] = useState(false)
+  const [ showPassword, setShowPassword ] = useState(false);
+  const [ isLoading, setIsLoading ] = useState();
 
 
 
@@ -20,16 +21,15 @@ function Login(){
     event.preventDefault();
     const formData = new FormData(event.target.form);
     const allData = Object.fromEntries(formData.entries());
-    //console.log(allData);
+
+    setIsLoading(true);
 
     try{
        await signInWithEmailAndPassword(auth, allData.email, allData.password);
-      //const user = userDetails.user;
-      //console.log('user logged in', user.email);
+      
       navigate("/dashboard");
 
       } catch (err) {
-      //console.log('Log in error', err.message);
       
       switch (err.code) {
         case "auth/invalid-email":
@@ -54,7 +54,17 @@ function Login(){
           setError("Login failed. Please try again.");
 
       }
+
+      setIsLoading(false);
   }}
+
+  if(isLoading){
+    return(
+      <div className="bg-slate-800 min-h-screen flex items-center justify-center text-white text-xl">
+        Loading Dashboard...
+      </div>
+    )
+  }
 
   
 
@@ -107,10 +117,7 @@ function Login(){
           
         </div>
 
-        {/* <div className="flex gap-2">
-            <input type="checkbox" name="" id="" className="cursor-pointer" required/>
-            <p>Remember me</p>
-        </div> */}
+        
         
         <p><Link to='/signup'>Don't have an account?</Link></p>
 

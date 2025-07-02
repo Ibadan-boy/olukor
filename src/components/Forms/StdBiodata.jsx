@@ -17,15 +17,15 @@ const StdBiodata = () => {
   async function handleStudentSubmit(event){
     event.preventDefault();
     //console.log('Student form submitted');
-    const formData = new FormData(event.target.form);
+    const formData = new FormData(event.target);
     const allData = Object.fromEntries(formData.entries());
     console.log(formData);
 
     try{
-      await addDoc(collection(database, "students")), {
+      await addDoc(collection(database, "students"), {
         ...allData,
         createdAt: new Date()
-      }
+      })
     } catch(err){
       console.log(err)
     }
@@ -36,7 +36,7 @@ const StdBiodata = () => {
       <form className={generalClasses[1]} onSubmit={handleStudentSubmit}>
 
  
-        <div className={generalClasses[2]}>
+        {/* <div className={generalClasses[2]}>
           <div className={generalClasses[3]}>
             <svg className="w-16 h-16 text-slate-400" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 
@@ -53,7 +53,7 @@ const StdBiodata = () => {
           </label>
           <input type="file" id="profilePic" accept="image/*" className="hidden" name="photo"/>
         </div>
-
+ */}
 
         <div className={generalClasses[5]}>
           <div>
