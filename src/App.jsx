@@ -10,6 +10,7 @@ import WelcomePage from './components/WelcomeDashboard';
 import StdBiodata from './components/Forms/StdBiodata';
 import EnrolledStd from './components/EnrolledStd';
 import TeacherProfile from './components/TeacherProfile';
+import StudentProfile from './components/StudentProfile';
 
 const route = createBrowserRouter([
   { path: '/', element: <MainLayout/>,
@@ -28,7 +29,8 @@ const route = createBrowserRouter([
       { path: 'students', element: <EnrolledStd />},
       { path: 'profile', element: <TeacherProfile/> },
       { path: 'addstudent', element: <StdBiodata/> },
-      { path: 'settings', element: <ErrorPage/> }
+      { path: 'settings', element: <ErrorPage/> },
+      { path: 'studentprofile', element: <StudentProfile/> },
     ]
   } 
   ] },

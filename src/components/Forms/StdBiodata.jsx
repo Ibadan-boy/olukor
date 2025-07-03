@@ -1,8 +1,12 @@
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, query, where, getDocs } from "firebase/firestore";
 import Button from "../UI/Button";
 import { database } from "../../services/firebase";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const StdBiodata = () => {
+  const [ isLoading, setIsLoading ] = useState();
+  const navigate = useNavigate();
   
   const generalClasses = ["min-h-screen flex items-center justify-center bg-gray-800 text-white px-4",
      "w-full max-w-2xl bg-gray-800 p-8 rounded-lg shadow-lg space-y-6",
@@ -16,44 +20,47 @@ const StdBiodata = () => {
 
   async function handleStudentSubmit(event){
     event.preventDefault();
-    //console.log('Student form submitted');
+    
     const formData = new FormData(event.target);
     const allData = Object.fromEntries(formData.entries());
-    console.log(formData);
+  
+    if(allData.firstName === "" || allData.lastName === ""){
+      alert("Add a student name");
+      return;
+    }
+    const studentId = allData.studentId;
+    const q = query(collection(database, "students"), where("studentId", "==", studentId));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      alert("Student ID already exists. Please use a unique ID.");
+      return;
+    }
+
 
     try{
+      setIsLoading(true);
       await addDoc(collection(database, "students"), {
         ...allData,
         createdAt: new Date()
       })
     } catch(err){
       console.log(err)
+    } finally{
+      setIsLoading(false);
+      navigate('/dashboard/students')
     }
   }
 
+  if (isLoading) return <p className="bg-slate-800 min-h-screen flex items-center justify-center text-white text-xl">Adding student...</p>;
+
   return (
+    
     <div className= {generalClasses[0]}>
+    
       <form className={generalClasses[1]} onSubmit={handleStudentSubmit}>
 
- 
-        {/* <div className={generalClasses[2]}>
-          <div className={generalClasses[3]}>
-            <svg className="w-16 h-16 text-slate-400" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 
-                1.79-4 4 1.79 4 4 4zm0 2c-2.67 
-                0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-            </svg>
-          </div>
-
-          <label
-            htmlFor="profilePic"
-            className={generalClasses[4]}
-          >
-            Upload Photo
-          </label>
-          <input type="file" id="profilePic" accept="image/*" className="hidden" name="photo"/>
-        </div>
- */}
+        <button type="button" className="bg-blue-600 px-4 py-2 hover:bg-blue-800 cursor-pointer rounded" onClick={()=> {navigate('/dashboard/students')}}>Go Back</button>
 
         <div className={generalClasses[5]}>
           <div>
@@ -62,6 +69,7 @@ const StdBiodata = () => {
               type="text"
               className={generalClasses[8]}
               name="firstName"
+              required
             />
           </div>
 
@@ -71,6 +79,7 @@ const StdBiodata = () => {
               type="text"
               className={generalClasses[8]}
               name="lastName"
+              required
             />
           </div>
         </div>
@@ -81,17 +90,13 @@ const StdBiodata = () => {
             type="text"
             className={generalClasses[8]}
             name="studentId"
+            required
           />
         </div>
 
-        <div className="flex items-center gap-6">
-          <label className="flex items-center gap-2">
-            <input type="radio" name="gender" className="accent-blue-600" />
-            <span className="text-slate-400">Male</span>
-          </label>
-          <label className="flex items-center gap-2">
-            <input type="radio" name="gender" className="accent-blue-600" />
-            <span className="text-slate-400">Female</span>
+        <div>
+          <label className="m-2">
+            <input type="text" name="gender" placeholder="Gender" className = {generalClasses[8]} required/>
           </label>
         </div>
 
@@ -101,6 +106,7 @@ const StdBiodata = () => {
             type="date"
             className={generalClasses[8]}
             name="dateOfBirth"
+            required
           />
         </div>
 
@@ -111,6 +117,7 @@ const StdBiodata = () => {
             className={generalClasses[8]}
             placeholder="Enter any relevant notes here..."
             name="about-student"
+            required
           ></textarea>
         </div>
 
