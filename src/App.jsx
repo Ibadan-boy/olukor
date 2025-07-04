@@ -30,7 +30,7 @@ const route = createBrowserRouter([
       { path: 'profile', element: <TeacherProfile/> },
       { path: 'addstudent', element: <StdBiodata/> },
       { path: 'settings', element: <ErrorPage/> },
-      { path: 'studentprofile', element: <StudentProfile/> },
+      { path: 'studentprofile/:student', element: <StudentProfile/> },
     ]
   } 
   ] },

@@ -69,7 +69,7 @@ const EnrolledStd = ({ students }) => {
                 <ul className="list-none space-y-1 grid grid-cols-3">
                     {fetchedStudents.map((student) => (
                     <li key={student.id} className="group hover:bg-slate-600 rounded-lg flex m-8">
-                        <button onClick={()=> {navigate('/dashboard/studentprofile')}} className="w-full text-3xl text-left px-3 py-2 rounded-md hover:bg-gray-50 focus:outline-none bg-slate-700 font-medium transition-colors bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                        <button onClick={()=> {navigate(`/dashboard/studentprofile/${student.id}`)}} className="w-full text-3xl text-left px-3 py-2 rounded-md hover:bg-gray-50 focus:outline-none bg-slate-700 font-medium transition-colors bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
                         {student.firstName} {student.lastName}
                         </button>
 
