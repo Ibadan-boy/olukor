@@ -1,79 +1,83 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
-import NoStudent from "./NoStudent";
-import { getDocs, collection } from "firebase/firestore";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { database } from "../services/firebase";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 
-const StudentProfile = ({ students }) => {
-    const [fetchedStudents, setFetchedStudents] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+const StudentProfile = () => {
     const navigate = useNavigate();
-    const params = useParams();
+    const [ currentStudent, setCurrentStudent ] = useState([])
+    const { id } = useParams()
+
+    // useEffect(()=> {
+    //     async function fetchStudents(){
+    //         try{
+    //             const snapShot = await getDocs(collection(database, "students"));
+    //             const list = snapShot.docs.map( doc => ({
+    //                 id: doc.id,
+    //                 ...doc.data(),
+    //             }));
+    //             setFetchedStudents(list);
+    //             console.log(fetchedStudents)
+    //         } catch(err){
+    //             console.error(err);
+    //             } finally{
+    //             //setIsLoading(false);
+    //             }
+    //     }
+
+    //     fetchStudents();
+    // }, []);
 
     useEffect(() => {
-        async function fetchStudents() {
-            try {
-                const snapShot = await getDocs(collection(database, "students"));
-                const list = snapShot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
-                setFetchedStudents(list);
-            } catch (err) {
-                console.error(err);
-            } finally {
-                setIsLoading(false);
-            }
+    const fetchStudent = async () => {
+      try {
+        const docRef = doc(database, "students", id);
+        const docSnap = await getDoc(docRef);
+        console.log(id)
+        console.log(docSnap);
+
+        if (docSnap.exists()) {
+          setCurrentStudent({ id: docSnap.id, ...docSnap.data() });
+        } else {
+          console.log("Student not found.");
         }
+      } catch (error) {
+        console.error("Error fetching student:", error);
+      }
+    };
 
-        fetchStudents();
-    }, []);
+    fetchStudent();
+  }, [id]);
 
-    if (isLoading) return <p className="bg-slate-800 min-h-screen flex items-center justify-center text-white text-xl">Loading student's profile...</p>;
-
-    if (fetchedStudents.length === 0) {
-        return <NoStudent />;
-    }
-
-    // Get specific student from fetched data or use prop
-    const currentStudent = students || fetchedStudents.find(student => student.id === params.id) || fetchedStudents[0];
-
-    // Add safety check
-    if (!currentStudent) {
-        return <div>Student not found</div>;
-    }
-
-    return (
+    return(
         <>
-            <div>
-                <div className="bg-slate-700 text-white rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-6 items-center justify-center">
-                    <div className="text-center border-b border-slate-600 pb-4">
-                        <h2 className="text-3xl font-bold tracking-wide">
-                            {currentStudent.firstName} {currentStudent.lastName}
-                        </h2>
-                        <h2 className="text-xl text-slate-300 tracking-wide font-medium">
-                            {currentStudent.gender}
-                        </h2>
-                    </div>
+            <div className="max-w-xl mx-auto bg-slate-700 shadow-lg rounded-lg p-6 text-white">
+  <div className="space-y-6">
+    <div>
+      <h1 className="text-3xl font-bold">
+        {currentStudent.firstName} {currentStudent.lastName}
+      </h1>
+      <p className="mt-2 text-xl text-slate-300">{currentStudent.gender}</p>
+    </div>
 
-                    <div className="text-center">
-                        <h2 className="text-lg text-slate-400 font-medium">
-                            Date of Birth:{" "}
-                            <span className="text-white font-semibold">
-                                {currentStudent.dateOfBirth}
-                            </span>
-                        </h2>
-                    </div>
-                </div>
-            </div>
-            
-            <Link to='/dashboard/students'>
-                <button type="button" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded shadow mt-4 transition cursor-pointer m-8">
-                    Go Back
-                </button>
-            </Link>
+    <div>
+      <h2 className="text-xl font-semibold text-slate-200">
+        Date of Birth: {currentStudent.dateOfBirth}
+      </h2>
+      <p className="mt-2 text-slate-300">{currentStudent["about-student"]}</p>
+    </div>
+  </div>
+
+  <button
+    onClick={() => navigate(-1)}
+    className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition duration-200"
+  >
+    Go back
+  </button>
+</div>
+
         </>
-    );
-};
+    )
+}
 
 export default StudentProfile;
